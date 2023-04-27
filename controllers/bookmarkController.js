@@ -1,6 +1,7 @@
 const express = require('express');
 const bookmark = express.Router();
-const { getAllBookmarks, getABookmark, createBookmark, deleteBookmark } = require('../queries/bookmarks') 
+const { getAllBookmarks, getABookmark, createBookmark, deleteBookmark, updateBookmark } = require('../queries/bookmarks') 
+const { checkRequest, validateURL, checkId } = require('../validations/checkBookmarks')
 
 // index route
 bookmark.get('/', async (req, res) => {
@@ -26,8 +27,9 @@ bookmark.get('/:id', async (req, res) => {
 });
 
 // create route
-bookmark.post('/', async (req, res) => {
+bookmark.post('/',  async (req, res) => {
     const newBookmark = req.body;
+    // const { body } = req;
 
     try {
         const addedBookmark = await createBookmark(newBookmark)
@@ -47,6 +49,19 @@ bookmark.delete('/:id', async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error})
     }
-})
+});
+
+// update route
+bookmark.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { body } = req;
+
+    try {
+       const updatedBookmark = await updateBookmark(id, body);
+       res.status(200).json(updatedBookmark);
+    } catch (error) {
+        res.status(400).json({ error: error});
+    };
+});
 
 module.exports = bookmark;

@@ -2,10 +2,12 @@ const express = require('express');
 const app = express();
 const cors = require('cors')
 const bookmarkController = require('./controllers/bookmarkController')
+const { validateUrl } = require('./validations/checkBookmarks')
 
 
 app.use(express.json());
 app.use(cors());
+// app.use(validateUrl);
 
 app.use('/bookmark', bookmarkController)
 app.get('/', (req, res) => {
